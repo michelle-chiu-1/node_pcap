@@ -57,6 +57,40 @@ TCPFlags.prototype.toString = function () {
     return ret;
 };
 
+TCPFlags.prototype.value = function () {
+    var ret = 0;
+    
+    if (this.nonce) {
+        ret |= 1;
+    }
+    if (this.cwr) {
+        ret |= 128;
+    }
+    if (this.ece) {
+        ret |= 64;
+    }
+    if (this.urg) {
+        ret |= 32;
+    }
+    if (this.ack) {
+        ret |= 16;
+    }
+    if (this.psh) {
+        ret |= 8;
+    }
+    if (this.rst) {
+        ret |= 4;
+    }
+    if (this.syn) {
+        ret |= 2;
+    }
+    if (this.fin) {
+        ret |= 1;
+    }
+
+    return ret;
+}
+
 function TCPOptions() {
     this.mss = null;
     this.window_scale = null;
