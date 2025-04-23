@@ -73,7 +73,7 @@ TCPOptions.prototype.decode = function (raw_packet, offset, len) {
     while (offset < end_offset) {
         switch (raw_packet[offset]) {
         case 0: // end of options list
-            offset = end_offset;
+            offset += 1;
             this.data.push('E');
             break;
         case 1: // NOP / padding
