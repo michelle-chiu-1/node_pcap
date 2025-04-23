@@ -64,42 +64,43 @@ function TCPOptions() {
     this.sack = null;
     this.timestamp = null;
     this.echo = null;
-    this.offset = null;
-    this.length = null;
-    this.data = null;
+    this.data = [];
 }
 
 TCPOptions.prototype.decode = function (raw_packet, offset, len) {
     var end_offset = offset + len;
-    this.offset = offset;
-    this.length = len;
-    this.data = raw_packet.slice(offset, end_offset);
 
     while (offset < end_offset) {
         switch (raw_packet[offset]) {
         case 0: // end of options list
             offset = end_offset;
+            this.data.push('E');
             break;
         case 1: // NOP / padding
             offset += 1;
+            this.data.push('N');
             break;
         case 2:
             offset += 2;
             this.mss = raw_packet.readUInt16BE(offset);
             offset += 2;
+            this.data.push('M' + this.mss);
             break;
         case 3:
             offset += 2;
             this.window_scale = raw_packet[offset];
             offset += 1;
+            this.data.push('W' + this.window_scale);
             break;
         case 4:
             this.sack_ok = true;
             offset += 2;
+            this.data.push('S');
             break;
         case 5:
             this.sack = [];
             offset += 1;
+            this.data.push('K');
             switch (raw_packet[offset]) {
             case 10:
                 offset += 1;
@@ -144,6 +145,7 @@ TCPOptions.prototype.decode = function (raw_packet, offset, len) {
             offset += 4;
             this.echo = raw_packet.readUInt32BE(offset);
             offset += 4;
+            this.data.push('T');
             break;
         case 254:
         case 255:
