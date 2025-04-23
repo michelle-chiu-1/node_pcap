@@ -64,10 +64,16 @@ function TCPOptions() {
     this.sack = null;
     this.timestamp = null;
     this.echo = null;
+    this.offset = null;
+    this.length = null;
+    this.data = null;
 }
 
 TCPOptions.prototype.decode = function (raw_packet, offset, len) {
     var end_offset = offset + len;
+    this.offset = offset;
+    this.length = len;
+    this.data = raw_packet.slice(offset, end_offset);
 
     while (offset < end_offset) {
         switch (raw_packet[offset]) {
